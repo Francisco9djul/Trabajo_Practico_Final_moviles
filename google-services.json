@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1018858743793",
+    "project_id": "tp3-appmov",
+    "storage_bucket": "tp3-appmov.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1018858743793:android:2d5b13dcedb5c5a6914650",
+        "android_client_info": {
+          "package_name": "com.tpfinal.appmov"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyArD87rYQJ_YZSnjhU_PHaUxxaJ-hsrj6U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
