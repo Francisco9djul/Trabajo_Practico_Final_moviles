@@ -13,20 +13,21 @@ export default function Loginscreen ({ navigation }){
   try { 
     //eliminaar este navigation para pedir usuario
     navigation.replace('Inicio');
-    auth = getFirebaseAuth();
-    console.log("Auth inicializado:", auth);
+   // auth = getFirebaseAuth();
+    //console.log("Auth inicializado:", auth);
   } catch (e) {
-    console.error("Error al obtener auth:", e);
-    Alert.alert("Error interno", "No se pudo inicializar Firebase Auth.");
+    //console.error("Error al obtener auth:", e);
+    //descomentar cuando este integrado el login
+   // Alert.alert("Error interno", "No se pudo inicializar Firebase Auth.");
     return;
   }
 
     try {
-     const userCredential = await signInWithEmailAndPassword(auth, email, password);  
-        console.log("Login exitoso:", userCredential.user.email);
+    // const userCredential = await signInWithEmailAndPassword(auth, email, password);  
+     //   console.log("Login exitoso:", userCredential.user.email);
       navigation.replace('Inicio');
     } catch (error) {
-      Alert.alert('Error', 'Usuario o Contraseña inválidas. Por favor, intenta nuevamente.');
+     // Alert.alert('Error', 'Usuario o Contraseña inválidas. Por favor, intenta nuevamente.');
     }
   };
 

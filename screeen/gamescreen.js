@@ -1,36 +1,49 @@
 import React, { useState, useEffect } from 'react';
-import { View, Alert } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 
 import Grid from '../components/grid';
-import Keyboard from "../components/keyboard";
+import Keyboard from '../components/keyboard';
 
 import { validWords, getRandomWord } from '../utils/words';
-import { styles } from '../styles/styles';
 
 const wordLength = 5;
 const maxAttempts = 6;
 
 export default function Gamescreen() {
   const [secretWord, setSecretWord] = useState('');
-  const [attempts, setAttempts] = useState([]); // lista de palabras intentadas
+  const [attempts, setAttempts] = useState([]);
   const [currentAttempt, setCurrentAttempt] = useState('');
   const [gameOver, setGameOver] = useState(false);
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
-    setSecretWord(getRandomWord());
+    startNewGame();
   }, []);
 
+  const startNewGame = () => {
+    setSecretWord(getRandomWord());
+    setAttempts([]);
+    setCurrentAttempt('');
+    setGameOver(false);
+    setMessage('');
+  };
+
+  const contarLetras = (palabra) => {
+    return [...palabra].filter(letra =>
+      /[a-záéíóúñ]/i.test(letra)
+    ).length;
+  };
+
   const onKeyPress = (key) => {
-    console.log("Tecla presionada:", key); 
-    if (gameOver) return;
+    if (gameOver) {
+      startNewGame();
+      return;
+    }
 
     if (key === 'ENTER') {
-      if (currentAttempt.length !== wordLength) {
-        Alert.alert('La palabra debe tener 5 letras');
-        return;
-      }
-      if (!validWords.includes(currentAttempt.toLowerCase())) {
-        Alert.alert('Palabra no válida');
+      if (contarLetras(currentAttempt) !== wordLength) {
+        setMessage(`La palabra debe tener ${wordLength} letras`);
+        clearMessageAfterDelay();
         return;
       }
 
@@ -38,20 +51,37 @@ export default function Gamescreen() {
       setAttempts(newAttempts);
       setCurrentAttempt('');
 
-      if (currentAttempt === secretWord) {
-        Alert.alert('¡Ganaste!');
+      const intentoNormalizado = currentAttempt.normalize("NFC").toLowerCase();
+      const secretaNormalizada = secretWord.normalize("NFC").toLowerCase();
+
+      if (intentoNormalizado === secretaNormalizada) {
+        setMessage('¡Ganaste! Presiona cualquier tecla para jugar otra vez');
         setGameOver(true);
       } else if (newAttempts.length >= maxAttempts) {
-        Alert.alert(`Perdiste! La palabra era ${secretWord}`);
+        setMessage(`Perdiste! La palabra era "${secretWord}". Presiona cualquier tecla para jugar otra vez`);
         setGameOver(true);
+      } else {
+        if (!validWords.includes(intentoNormalizado)) {
+          setMessage('Palabra no reconocida, intento gastado');
+          clearMessageAfterDelay();
+        } else {
+          setMessage('');
+        }
       }
+
     } else if (key === 'DEL') {
       setCurrentAttempt(currentAttempt.slice(0, -1));
+      setMessage('');
     } else {
-      if (currentAttempt.length < wordLength) {
+      if (contarLetras(currentAttempt) < wordLength) {
         setCurrentAttempt(currentAttempt + key);
+        setMessage('');
       }
     }
+  };
+
+  const clearMessageAfterDelay = () => {
+    setTimeout(() => setMessage(''), 2000);
   };
 
   return (
@@ -64,8 +94,25 @@ export default function Gamescreen() {
         wordLength={wordLength}
       />
       <Keyboard onKeyPress={onKeyPress} />
-      
+      {message !== '' && (
+        <Text style={styles.message}>{message}</Text>
+      )}
     </View>
-    
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingBottom: 20,
+    backgroundColor: '#f5f5f5',
+  },
+  message: {
+    textAlign: 'center',
+    color: '#d32f2f',
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginTop: 12,
+  },
+});
