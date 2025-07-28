@@ -1,12 +1,14 @@
-import Crearcuentascreen from "./screeen/crearcuentascreen";
-import Gamescreen from "./screeen/gamescreen";
-import Loginscreen from "./screeen/loginscreen";
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+
+import Crearcuentascreen from "./screeen/crearcuentascreen";
+import Gamescreen from "./screeen/gamescreen";
+import Loginscreen from "./screeen/loginscreen";
 import MenuScreen from "./screeen/menuscreen";
 import ReglasScreen from "./screeen/reglasscreen";
 import RankingScreen from "./screeen/rankingscreen";
+
 const Stack = createStackNavigator();
 
 const App = () => {
@@ -23,5 +25,7 @@ const App = () => {
     </NavigationContainer>
   );
 };
+
+
 
 export default App;

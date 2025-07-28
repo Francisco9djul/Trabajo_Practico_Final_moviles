@@ -5,23 +5,15 @@ import { getFirestore } from 'firebase/firestore';
 
 // Tu configuración de Firebase
 const firebaseConfig = {
-
-  apiKey: "AIzaSyCDYZuT-xoWEkjOCkYiw3dVYyqasQs-Bbg",
-
-  authDomain: "tp3-appmov.firebaseapp.com",
-
-  projectId: "tp3-appmov",
-
-  storageBucket: "tp3-appmov.firebasestorage.app",
-
-  messagingSenderId: "1018858743793",
-
-  appId: "1:1018858743793:web:9f645b910b99aab6914650"
-
+  apiKey: "AIzaSyC0R0UUfxwgpSAfHZy6F5v_ABaZHF33XUo",
+  authDomain: "trabajo-practico-final-moviles.firebaseapp.com",
+  projectId: "trabajo-practico-final-moviles",
+  storageBucket: "trabajo-practico-final-moviles.firebasestorage.app",
+  messagingSenderId: "504137663667",
+  appId: "1:504137663667:web:139a9bf03b330285d55cc6"
 };
 
-
-
+console.log("🔥 Firebase se inicializó con config:", firebaseConfig);
 
 // Inicializar Firebase
 const app = initializeApp(firebaseConfig);
