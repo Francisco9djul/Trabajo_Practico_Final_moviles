@@ -21,7 +21,7 @@ const app = initializeApp(firebaseConfig);
 // Inicializar servicios
 console.log(typeof initializeAuth);
 
-export const getFirebaseAuth = () => getAuth(app);
-export const getFirebaseFirestore = () => getFirestore(app);
-console.log(getFirebaseAuth);
+// Exportar Auth y Firestore listos para usar
+export const auth = getAuth(app);
+export const db = getFirestore(app);
 

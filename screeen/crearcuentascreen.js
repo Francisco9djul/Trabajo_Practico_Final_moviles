@@ -1,21 +1,28 @@
 import React, { useState } from 'react';
 import { View, TextInput, StyleSheet, Alert, TouchableOpacity, Text } from 'react-native';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../credentials';
+import { collection, setDoc, doc } from 'firebase/firestore';
+import { auth, db } from '../credentials';
 import { Title, Subheading } from 'react-native-paper';
 
 const Crearcuentascreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
+  const [nombreyapellido, setNombre] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   const validateEmail = (email) => {
-    // Patrón para validar correos electrónicos
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailPattern.test(email);
   };
 
   const handleCrearCuenta = async () => {
+
+    if (!nombreyapellido.trim()) {
+      setError('Por favor, ingrese su nombre y apellido.');
+      return;
+    }
+
     if (!validateEmail(email)) {
       setError('Por favor, ingresa un correo válido.');
       return;
@@ -27,28 +34,50 @@ const Crearcuentascreen = ({ navigation }) => {
     }
 
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      Alert.alert('Cuenta creada', 'Tu cuenta ha sido creada exitosamente.');
-      navigation.replace('Login'); 
+      // 1. Crear el usuario en Firebase Auth
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      console.log("Usuario creado:", user);
+
+      // 2. Guardar el usuario en Firestore (colección "usuarios")
+      await setDoc(doc(db, "usuarios", user.uid), {
+        uid: user.uid,
+        email: user.email,
+        nombreyapellido: nombreyapellido, 
+        puntaje: 0, // puntuación inicial
+        creado: new Date()
+      });
+
+      Alert.alert('✅ Cuenta creada', 'Tu cuenta ha sido creada exitosamente.');
+      navigation.replace('Login');
     } catch (error) {
-      // Manejo de errores específicos de Firebase
       if (error.code === 'auth/email-already-in-use') {
-        setError('El correo ya está registrado. Intenta con otro.');
+        setError('El correo ya está registrado.');
       } else if (error.code === 'auth/invalid-email') {
-        setError('El formato del correo no es válido.');
+        setError('Formato de correo inválido.');
       } else {
-        setError('Hubo un error al crear tu cuenta. Intenta nuevamente.');
+        setError('Error al crear la cuenta. Intenta nuevamente.');
+        console.error(error); // log para desarrollo
       }
     }
   };
 
   return (
     <View style={styles.container}>
-      {/* Título principal */}
       <Title style={styles.title}>Crear Cuenta</Title>
-
-      {/* Subtítulo */}
       <Subheading style={styles.subtitle}>Regístrate</Subheading>
+
+
+      <TextInput
+        style={styles.input}
+        placeholder="Nombre y Apellido"
+        value={nombreyapellido}
+        onChangeText={(text) => {
+          setNombre(text);
+          setError('');
+        }}
+      />
 
       <TextInput
         style={styles.input}
@@ -56,19 +85,22 @@ const Crearcuentascreen = ({ navigation }) => {
         value={email}
         onChangeText={(text) => {
           setEmail(text);
-          setError(''); // Limpia el mensaje de error mientras se escribe
+          setError('');
         }}
         keyboardType="email-address"
-        autoCapitalize="none"/>
+        autoCapitalize="none"
+      />
+
       <TextInput
         style={styles.input}
         placeholder="Contraseña"
         value={password}
         onChangeText={(text) => {
           setPassword(text);
-          setError(''); // Limpia el mensaje de error mientras se escribe
+          setError('');
         }}
-        secureTextEntry/>
+        secureTextEntry
+      />
 
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
 

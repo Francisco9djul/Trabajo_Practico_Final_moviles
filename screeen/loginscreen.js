@@ -1,33 +1,43 @@
 import React, { useState } from 'react';
 import { View, TextInput, StyleSheet, Alert, TouchableOpacity, Text } from 'react-native';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { getFirebaseAuth } from "../credentials";
+import { auth } from '../credentials'; 
 import { Title, Subheading } from 'react-native-paper';
+import { KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 
 export default function Loginscreen ({ navigation }){
+  const [errorMessage, setErrorMessage] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = async () => {
-  let auth;
-  try { 
-    //eliminaar este navigation para pedir usuario
-    navigation.replace('Inicio');
-   // auth = getFirebaseAuth();
-    //console.log("Auth inicializado:", auth);
-  } catch (e) {
-    //console.error("Error al obtener auth:", e);
-    //descomentar cuando este integrado el login
-   // Alert.alert("Error interno", "No se pudo inicializar Firebase Auth.");
-    return;
-  }
+
+const handleLogin = async () => {
+    setErrorMessage(''); // Limpiar mensaje anterior
 
     try {
-    // const userCredential = await signInWithEmailAndPassword(auth, email, password);  
-     //   console.log("Login exitoso:", userCredential.user.email);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      console.log("Login exitoso:", user);
       navigation.replace('Inicio');
-    } catch (error) {
-     // Alert.alert('Error', 'Usuario o Contraseña inválidas. Por favor, intenta nuevamente.');
+      // Navegar a otra pantalla o continuar
+    } 
+    catch (error) {
+      console.log("Código de error:", error.code);
+
+      if ( error.code === 'auth/user-not-found') {
+        setErrorMessage('Usuario no encontrado. Por favor, verifica tu correo.');
+      } else if (error.code === 'auth/invalid-credential') {
+      setErrorMessage('Correo o contraseña incorrectos. Intenta nuevamente.');
+      } else if (error.code === 'auth/missing-password') {
+        setErrorMessage('Ingrese una contraseña. Intenta nuevamente.');
+      } else if (error.code === 'auth/invalid-email') {
+        setErrorMessage('Formato de correo inválido.');
+      } else if (error.code === 'auth/too-many-requests') {
+        setErrorMessage('Demasiados intentos fallidos. Intenta más tarde.');
+      } else {
+        setErrorMessage('Ocurrió un error. Intenta más tarde.');
+        console.error('Error desconocido:', error.message);
+      }
     }
   };
 
@@ -37,30 +47,40 @@ export default function Loginscreen ({ navigation }){
 
   return (
     <View style={styles.container}>
-      {/* Título principal */}
       <Title style={styles.title}>Trabajo Práctico</Title>
-
-      {/* Subtítulo */}
       <Subheading style={styles.subtitle}>WordleApp</Subheading>
 
       <TextInput
         style={styles.input}
         placeholder="Correo electrónico"
         value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"/>
+        onChangeText={text => {
+          setEmail(text);
+          setErrorMessage('');
+        }}
+        keyboardType="email-address"
+        autoCapitalize="none"
+      />
+
       <TextInput
         style={styles.input}
         placeholder="Contraseña"
         value={password}
-        onChangeText={setPassword}
-        secureTextEntry/>
-    
+        onChangeText={text => {
+          setPassword(text);
+          setErrorMessage('');
+        }}
+        secureTextEntry
+      />
+
+      {errorMessage !== '' && (
+         <Text style={{ color: 'red', marginTop: 10 }}>{errorMessage}</Text>
+      )}
+
       <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
         <Text style={styles.loginButtonText}>Iniciar Sesión</Text>
       </TouchableOpacity>
 
-      {/* Botón de "Crear cuenta" */}
       <TouchableOpacity style={styles.createAccountButton} onPress={handleCrearCuenta}>
         <Text style={styles.createAccountText}>¿No tienes cuenta? Crear cuenta</Text>
       </TouchableOpacity>
