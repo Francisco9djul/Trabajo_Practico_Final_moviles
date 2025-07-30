@@ -1,3 +1,11 @@
+import { 
+  VITE_API_KEY, 
+  VITE_AUTH_DOMAIN, 
+  VITE_PROJECT_ID, 
+  VITE_STORAGE_BUCKET, 
+  VITE_MESSAGING_SENDER_ID, 
+  VITE_APP_ID 
+} from '@env';
 
 import { initializeApp } from 'firebase/app';
 import { getAuth, initializeAuth } from 'firebase/auth';
@@ -5,12 +13,12 @@ import { getFirestore } from 'firebase/firestore';
 
 // Tu configuración de Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyC0R0UUfxwgpSAfHZy6F5v_ABaZHF33XUo",
-  authDomain: "trabajo-practico-final-moviles.firebaseapp.com",
-  projectId: "trabajo-practico-final-moviles",
-  storageBucket: "trabajo-practico-final-moviles.firebasestorage.app",
-  messagingSenderId: "504137663667",
-  appId: "1:504137663667:web:139a9bf03b330285d55cc6"
+  apiKey: VITE_API_KEY,
+  authDomain: VITE_AUTH_DOMAIN,
+  projectId: VITE_PROJECT_ID,
+  storageBucket: VITE_STORAGE_BUCKET,
+  messagingSenderId: VITE_MESSAGING_SENDER_ID,
+  appId: VITE_APP_ID,
 };
 
 console.log("🔥 Firebase se inicializó con config:", firebaseConfig);

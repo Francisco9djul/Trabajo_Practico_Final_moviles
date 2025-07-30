@@ -38,3 +38,14 @@ Asegúrate de tener lo siguiente instalado en tu sistema:
     Node.js (recomendado: v18 o superior)
 
     Expo Go app instalada en tu dispositivo móvil (disponible en App Store y Google Play Store).
+
+## Variables de entorno
+
+Para que la aplicación funcione correctamente, necesitás crear un archivo `.env` en la raíz del proyecto con las variables necesarias.
+
+1. Copiá el archivo `.env.example` y renombralo a `.env`.
+
+2. Cargale las credenciales de Firebase que se te proporcionaron por separado
+
+3. Una vez configurado el archivo .env, podés iniciar la app con:
+`npx expo start`
