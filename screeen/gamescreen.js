@@ -6,6 +6,9 @@ import Keyboard from '../components/keyboard';
 
 import { validWords, getRandomWord } from '../utils/words';
 
+import { auth, db } from '../credentials'; 
+import { doc, updateDoc, increment } from 'firebase/firestore';
+
 const wordLength = 5;
 const maxAttempts = 6;
 
@@ -34,7 +37,7 @@ export default function Gamescreen() {
     ).length;
   };
 
-  const onKeyPress = (key) => {
+  const onKeyPress = async (key) => {
     if (gameOver) {
       startNewGame();
       return;
@@ -57,6 +60,20 @@ export default function Gamescreen() {
       if (intentoNormalizado === secretaNormalizada) {
         setMessage('¡Ganaste! Presiona cualquier tecla para jugar otra vez');
         setGameOver(true);
+
+        // Actualizar puntaje del usuario en Firestore
+        if (auth.currentUser) {
+          const userRef = doc(db, 'usuarios', auth.currentUser.uid);
+          try {
+            await updateDoc(userRef, {
+              puntaje: increment(1)
+            });
+            console.log('Puntaje actualizado +1');
+          } catch (error) {
+            console.error('Error actualizando puntaje:', error);
+          }
+        }
+
       } else if (newAttempts.length >= maxAttempts) {
         setMessage(`Perdiste! La palabra era "${secretWord}". Presiona cualquier tecla para jugar otra vez`);
         setGameOver(true);

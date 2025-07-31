@@ -1,26 +1,42 @@
-import React from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
-//datos hardcodeados se implementara cuando el login funcioner
-const datosRanking = [
-  { id: '1', nombre: 'Juan', puntaje: 120 },
-  { id: '2', nombre: 'Lucía', puntaje: 110 },
-  { id: '3', nombre: 'Carlos', puntaje: 100 },
-  { id: '4', nombre: 'Sofía', puntaje: 90 },
-  { id: '5', nombre: 'Martín', puntaje: 85 },
-];
+import React, { useEffect, useState } from 'react';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
+import { db } from '../credentials'; // Ajusta el path si es necesario
+import { collection, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
 
 export default function RankingScreen() {
+  const [ranking, setRanking] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const q = query(collection(db, 'usuarios'), orderBy('puntaje', 'desc'), limit(10));
+
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const usersRanking = [];
+      querySnapshot.forEach((doc) => {
+        usersRanking.push({ id: doc.id, ...doc.data() });
+      });
+      setRanking(usersRanking);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  if (loading) {
+    return <ActivityIndicator size="large" style={{ flex: 1, justifyContent: 'center' }} />;
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Ranking de Jugadores</Text>
 
       <FlatList
-        data={datosRanking}
+        data={ranking}
         keyExtractor={(item) => item.id}
         renderItem={({ item, index }) => (
           <View style={styles.item}>
             <Text style={styles.position}>{index + 1}°</Text>
-            <Text style={styles.name}>{item.nombre}</Text>
+            <Text style={styles.name}>{item.nombreyapellido || item.email}</Text>
             <Text style={styles.score}>{item.puntaje} pts</Text>
           </View>
         )}
