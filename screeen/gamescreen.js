@@ -9,6 +9,8 @@ import { validWords, getRandomWord } from '../utils/words';
 import { auth, db } from '../credentials'; 
 import { doc, updateDoc, increment } from 'firebase/firestore';
 
+import { LinearGradient } from 'expo-linear-gradient';  
+
 const wordLength = 5;
 const maxAttempts = 6;
 
@@ -61,7 +63,6 @@ export default function Gamescreen() {
         setMessage('¡Ganaste! Presiona cualquier tecla para jugar otra vez');
         setGameOver(true);
 
-        // Actualizar puntaje del usuario en Firestore
         if (auth.currentUser) {
           const userRef = doc(db, 'usuarios', auth.currentUser.uid);
           try {
@@ -102,28 +103,36 @@ export default function Gamescreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Grid
-        attempts={attempts}
-        currentAttempt={currentAttempt}
-        secretWord={secretWord}
-        maxAttempts={maxAttempts}
-        wordLength={wordLength}
-      />
-      <Keyboard onKeyPress={onKeyPress} />
-      {message !== '' && (
-        <Text style={styles.message}>{message}</Text>
-      )}
-    </View>
+    <LinearGradient
+      colors={['#8fd8b7', '#D3EDC0']}  // degradado verde claro 
+      style={styles.gradient}
+    >
+      <View style={styles.container}>
+        <Grid
+          attempts={attempts}
+          currentAttempt={currentAttempt}
+          secretWord={secretWord}
+          maxAttempts={maxAttempts}
+          wordLength={wordLength}
+        />
+        <Keyboard onKeyPress={onKeyPress} />
+        {message !== '' && (
+          <Text style={styles.message}>{message}</Text>
+        )}
+      </View>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
+  gradient: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
     paddingBottom: 20,
-    backgroundColor: '#f5f5f5',
+    paddingHorizontal: 20,
   },
   message: {
     textAlign: 'center',

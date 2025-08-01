@@ -4,6 +4,8 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { collection, setDoc, doc } from 'firebase/firestore';
 import { auth, db } from '../credentials';
 import { Title, Subheading } from 'react-native-paper';
+import { useFonts, FredokaOne_400Regular } from '@expo-google-fonts/fredoka-one';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const Crearcuentascreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -62,72 +64,94 @@ const Crearcuentascreen = ({ navigation }) => {
       }
     }
   };
+  const [fontsLoaded] = useFonts({ FredokaOne_400Regular });
+  if (!fontsLoaded) return null;
 
   return (
-    <View style={styles.container}>
-      <Title style={styles.title}>Crear Cuenta</Title>
-      <Subheading style={styles.subtitle}>Regístrate</Subheading>
+    <LinearGradient colors={['#d0f0c0', '#a8edea']} style={styles.gradientBackground}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Wordle</Text>
+        <Text style={styles.subtitle}>Crear Cuenta</Text>
 
+        <TextInput
+          style={styles.input}
+          placeholder="Nombre y Apellido"
+          value={nombreyapellido}
+          onChangeText={(text) => {
+            setNombre(text);
+            setError('');
+          }}
+        />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Nombre y Apellido"
-        value={nombreyapellido}
-        onChangeText={(text) => {
-          setNombre(text);
-          setError('');
-        }}
-      />
+        <TextInput
+          style={styles.input}
+          placeholder="Correo electrónico"
+          value={email}
+          onChangeText={(text) => {
+            setEmail(text);
+            setError('');
+          }}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Correo electrónico"
-        value={email}
-        onChangeText={(text) => {
-          setEmail(text);
-          setError('');
-        }}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
+        <TextInput
+          style={styles.input}
+          placeholder="Contraseña"
+          value={password}
+          onChangeText={(text) => {
+            setPassword(text);
+            setError('');
+          }}
+          secureTextEntry
+        />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Contraseña"
-        value={password}
-        onChangeText={(text) => {
-          setPassword(text);
-          setError('');
-        }}
-        secureTextEntry
-      />
+        {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
-
-      <TouchableOpacity style={styles.createButton} onPress={handleCrearCuenta}>
-        <Text style={styles.createButtonText}>Crear cuenta</Text>
-      </TouchableOpacity>
-    </View>
+        <TouchableOpacity style={styles.createButton} onPress={handleCrearCuenta}>
+          <Text style={styles.createButtonText}>Crear cuenta</Text>
+        </TouchableOpacity>
+      </View>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
+  gradientBackground: {
+    flex: 1,
+  },
   container: { 
-    flex: 1, 
-    justifyContent: 'center', 
+    flex: 1,
+    justifyContent: 'flex-start',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#f0f0f0',
+    paddingTop: 60,
   },
   title: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    marginBottom: 10,
+    fontSize: 52,
+    fontFamily: 'FredokaOne_400Regular',
+    fontWeight: 'normal',
+    marginBottom: 28,
+    color: '#ffffff',
+    textAlign: 'center',
+    textShadowColor: '#1b5e20',
+    textShadowOffset: { width: -3, height: 3 },
+    textShadowRadius: 4,
+    shadowColor: '#1b5e20',
+    shadowOffset: { width: -3, height: 3 },
+    shadowOpacity: 0.4,
+    shadowRadius: 4,
+    elevation: 6,
   },
   subtitle: {
-    fontSize: 18,
-    color: '#555',
-    marginBottom: 20,
+    fontSize: 24,
+    fontFamily: 'FredokaOne_400Regular',
+    color: '#ffffff',        // un verde turquesa oscuro
+    marginBottom: 25,
+    textAlign: 'center',
+    textShadowColor: '#004D40', // sombra más oscura
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
   },
   input: {
     height: 45,  
@@ -139,9 +163,7 @@ const styles = StyleSheet.create({
     borderRadius: 45,  
     backgroundColor: '#fff',
     fontSize: 16,
-    
-    // Sombrado para el campo de texto
-    shadowColor: 'red',
+    shadowColor: '2e7d32',
     shadowOffset: { width:0, height: 8 },
     shadowOpacity: 0.3,  
     shadowRadius: 9,  

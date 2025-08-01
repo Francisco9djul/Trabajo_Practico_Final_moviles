@@ -8,9 +8,9 @@ export default function Grid({ attempts, currentAttempt, secretWord, maxAttempts
   const getColor = (letter, index, attempt) => {
     if (!secretWord) return 'white';
 
-    if (secretWord[index] === letter) return '#6aaa64'; // verde
-    else if (secretWord.includes(letter)) return '#c9b458'; // amarillo
-    else return '#787c7e'; // gris
+    if (secretWord[index] === letter) return '#51D959'; // verde
+    else if (secretWord.includes(letter)) return '#EBD36A'; // amarillo
+    else return '#C8D8DB'; // gris
   };
 
   return (
